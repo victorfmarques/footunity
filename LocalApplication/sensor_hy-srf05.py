@@ -15,6 +15,9 @@ GPIO.output(TRIG, False)
 print("Waiting For Sensor To Settle")
 time.sleep(2)
 
+pulse_start = 0
+pulse_end = 0
+
 for i in range(1, 10):
     GPIO.output(TRIG, True)
     time.sleep(0.001)
@@ -23,10 +26,7 @@ for i in range(1, 10):
     while GPIO.input(ECHO) == 0:
         pulse_start = time.time()
 
-    time.sleep(2)
-
     while GPIO.input(ECHO) == 1:
-
         pulse_end = time.time()
 
     pulse_duration = pulse_end - pulse_start
