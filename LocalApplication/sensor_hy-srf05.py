@@ -17,13 +17,16 @@ time.sleep(2)
 
 for i in range(1, 10):
     GPIO.output(TRIG, True)
-    time.sleep(0.00001)
+    time.sleep(0.001)
     GPIO.output(TRIG, False)
 
     while GPIO.input(ECHO) == 0:
         pulse_start = time.time()
 
+    time.sleep(2)
+
     while GPIO.input(ECHO) == 1:
+
         pulse_end = time.time()
 
     pulse_duration = pulse_end - pulse_start
