@@ -40,14 +40,14 @@ class SRF05:
         # "The SRF05 will send out an 8 cycle burst of ultrasound at 40khz and raise its echo line high (or trigger line in mode 2)"
         # Wait no longer than 30ms
         if GPIO.wait_for_edge(self.echo_pin, GPIO.RISING, timeout=30) is None:
-            return None
+            return "wait_for_edge1"
 
         start = self.time_us()
 
         # Measure pulse duration, again do not wait more than 30ms
         # "If nothing is detected then the SRF05 will lower its echo line anyway after about 30mS."
         if GPIO.wait_for_edge(self.echo_pin, GPIO.FALLING, timeout=30) is None:
-            return None
+            return "wait_for_edge2"
 
         end = self.time_us()
 
@@ -55,7 +55,7 @@ class SRF05:
 
         # ...and by that logic we should not have real measurement with pulse longer than 30ms anyway
         if width > 30000:
-            return None
+            return "width"
 
         # "If the width of the pulse is measured in uS, then dividing by 58 will give you the distance in cm,
         # or dividing by 148 will give the distance in inches. uS/58=cm or uS/148=inches."
