@@ -49,7 +49,7 @@ class SRF05:
 
         # Measure pulse duration, again do not wait more than 30ms
         # "If nothing is detected then the SRF05 will lower its echo line anyway after about 30mS."
-        if GPIO.wait_for_edge(self.echo_pin, GPIO.FALLING, timeout=1000) is None:
+        if GPIO.wait_for_edge(self.echo_pin, GPIO.FALLING, timeout=30) is None:
             return "wait_for_edge2"
 
         end = self.time_us()
