@@ -39,11 +39,8 @@ class SRF05:
 
         # "The SRF05 will send out an 8 cycle burst of ultrasound at 40khz and raise its echo line high (or trigger line in mode 2)"
         # Wait no longer than 30ms
-        teste = GPIO.wait_for_edge(self.echo_pin, GPIO.RISING, timeout=30)
-        if teste is None:
+        if GPIO.wait_for_edge(self.echo_pin, GPIO.RISING, timeout=30) is None:
             return "wait_for_edge1"
-        else:
-            print(teste)
 
         start = self.time_us()
 
