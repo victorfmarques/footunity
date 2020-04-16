@@ -1,48 +1,57 @@
 import RPi.GPIO as GPIO
 import time
+import LocalApplication.helper as lib_helper
 
-GPIO.setmode(GPIO.BCM)
 
-TRIG = 23
-ECHO = 24
+class hc_sr04(object):
+    def __init__(self, trigger_pin, echo_pin):
+        # Choosing BCM setmode
+        GPIO.setmode(GPIO.BCM)
+        self.__trigger_pin = trigger_pin
+        self.__echo_pin = echo_pin
 
-start = 0
-end = 0
+        # Setting trigger and echo pins
+        GPIO.setup(self.__trigger_pin, GPIO.OUT)
+        GPIO.setup(self.__echo_pin, GPIO.IN)
 
-GPIO.cleanup()
+    def get_distance_cm(self):
+        # Setting local variables
+        start = 0
+        end = 0
+        sig_time = 0
+        distance = 0
 
-GPIO.setup(TRIG,GPIO.OUT)
-GPIO.setup(ECHO,GPIO.IN)
+        try:
+            # Forcing trigger pin to low
+            GPIO.output(self.__trigger_pin, False)
+            time.sleep(2)
 
-print("Pinos definidos\nTRIG={0}\nECHO={1}".format(TRIG, ECHO))
+            # Triggering a pulse
+            GPIO.output(self.__trigger_pin, True)
+            time.sleep(0.00001)
+            GPIO.output(self.__trigger_pin, False)
 
-GPIO.output(TRIG, False)
-print("Setando False para TRIG\n")
-time.sleep(2)
+            # Setting start time until the pulse is not captured back
+            while not GPIO.input(self.__echo_pin):
+                start = time.time()
 
-print("Status pino TRIG: {}\n" .format(str(GPIO.input(ECHO))))
+            # Setting end time until the pulse is listened
+            while GPIO.input(self.__echo_pin):
+                end = time.time()
 
-print("Ira realizar o pulso\n")
-GPIO.output(TRIG, True)
+            # Calculating the pulse time
+            sig_time = end - start
+            dht11 = lib_dht11.dht11(4)
 
-time.sleep(0.00001)
+            distance = sig_time * (int(lib_helper.get_speed_of_sound())/2)
 
-GPIO.output(TRIG, False)
-print("Pulso realizado\n")
+        except Exception as e:
+            # Handling exception
+            print(str(e))
 
-while GPIO.input(ECHO) == False:
-    print("ECHO -->  False\n")
-    start = time.time()
+        finally:
+            # Clean GPIO pins
+            GPIO.cleanup()
 
-while GPIO.input(ECHO) == True:
-    print("ECHO --> True\n")
-    end = time.time()
+        return distance
 
-sig_time = end - start
-
-#CM:
-distance = sig_time  * 17150
-
-print('Distance: {} centimeters'.format(distance))
-
-GPIO.cleanup()
