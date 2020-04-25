@@ -1,18 +1,26 @@
 import RPi.GPIO as GPIO
 import time
-import LocalApplication.helper as lib_helper
+import helper as lib_helper
 
 
 class hc_sr04(object):
+    __GPIO =  GPIO
+    __trigger_pin = 0
+    __echo_pin= 0
+	
     def __init__(self, trigger_pin, echo_pin):
         # Choosing BCM setmode
         GPIO.setmode(GPIO.BCM)
         self.__trigger_pin = trigger_pin
         self.__echo_pin = echo_pin
 
+        print("OOOOOOOOOOOOOO -> "+ str(self.__GPIO))
+        print(str(self.__trigger_pin))
+
         # Setting trigger and echo pins
         GPIO.setup(self.__trigger_pin, GPIO.OUT)
         GPIO.setup(self.__echo_pin, GPIO.IN)
+        self.GPIO = GPIO
 
     def get_distance_cm(self):
         # Setting local variables
@@ -21,22 +29,25 @@ class hc_sr04(object):
         sig_time = 0
         distance = 0
 
+        print("GPIO -> " + str(self.__GPIO))
+        print("get_distance " + str(self.__trigger_pin))
+
         try:
             # Forcing trigger pin to low
-            GPIO.output(self.__trigger_pin, False)
+            self.__GPIO.output(self.__trigger_pin, False)
             time.sleep(2)
 
             # Triggering a pulse
-            GPIO.output(self.__trigger_pin, True)
+            self.__GPIO.output(self.__trigger_pin, True)
             time.sleep(0.00001)
-            GPIO.output(self.__trigger_pin, False)
+            self.__GPIO.output(self.__trigger_pin, False)
 
             # Setting start time until the pulse is not captured back
-            while not GPIO.input(self.__echo_pin):
+            while not self.__GPIO.input(self.__echo_pin):
                 start = time.time()
 
             # Setting end time until the pulse is listened
-            while GPIO.input(self.__echo_pin):
+            while self.__GPIO.input(self.__echo_pin):
                 end = time.time()
 
             # Calculating the pulse time
@@ -51,7 +62,7 @@ class hc_sr04(object):
 
         finally:
             # Clean GPIO pins
-            GPIO.cleanup()
+            self.__GPIO.cleanup()
 
         return distance
 
