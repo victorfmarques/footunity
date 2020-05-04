@@ -6,6 +6,7 @@ import helper as lib_helper
 class hc_sr04(object):
     __trigger_pin = 0
     __echo_pin = 0
+    __number_of_measures = 5
 
     def __init__(self, trigger_pin, echo_pin):
 
@@ -22,35 +23,37 @@ class hc_sr04(object):
         end = 0
         sig_time = 0
         distance = 0
+        measure_number = 0
 
-	# Setting GPIO mode
+    	# Setting GPIO mode
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__trigger_pin, GPIO.OUT)
         GPIO.setup(self.__echo_pin, GPIO.IN)
 
         try:
-            # Forcing trigger pin to low
-            GPIO.output(self.__trigger_pin, False)
-            time.sleep(2)
+            for measure_number in range(self.__number_of_measures):
+                # Forcing trigger pin to low
+                GPIO.output(self.__trigger_pin, False)
+                time.sleep(2)
 
-            # Triggering a pulse
-            GPIO.output(self.__trigger_pin, True)
-            time.sleep(0.00001)
-            GPIO.output(self.__trigger_pin, False)
+                # Triggering a pulse
+                GPIO.output(self.__trigger_pin, True)
+                time.sleep(0.00001)
+                GPIO.output(self.__trigger_pin, False)
 
-            # Setting start time until the pulse is not captured back
-            while not GPIO.input(self.__echo_pin):
-                start = time.time()
+                # Setting start time until the pulse is not captured back
+                while not GPIO.input(self.__echo_pin):
+                    start = time.time()
 
-            # Setting end time until the pulse is listened
-            while GPIO.input(self.__echo_pin):
-                end = time.time()
+                # Setting end time until the pulse is listened
+                while GPIO.input(self.__echo_pin):
+                    end = time.time()
 
-            # Calculating the pulse time
-            sig_time = end - start
-            #  speed_of_sound = lib_helper.get_speed_of_sound()
-            # distance = sig_time * (speed_of_sound / 2)
-            distance = sig_time * 17150
+                # Calculating the pulse time
+                sig_time = end - start
+                #  speed_of_sound = lib_helper.get_speed_of_sound()
+                # distance = sig_time * (speed_of_sound / 2)
+                distance = sig_time * 17150
 
         except Exception as e:
             # Handling exception
@@ -60,4 +63,4 @@ class hc_sr04(object):
             # Clean GPIO pins
             GPIO.cleanup()
 
-        return distance
+        return distance / measure_number

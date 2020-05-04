@@ -1,5 +1,4 @@
-import sensor_hc_sr04 as lib_hc_sr04
+from api import ApiCommunicator
 
-sensor = lib_hc_sr04.hc_sr04(trigger_pin=23, echo_pin=24)
-while True:
-    print(str(sensor.get_distance_cm()))
+api_communicator = ApiCommunicator(user='admin', password='senhabemsecreta')
+api_communicator.queue_consumming('Measure')
