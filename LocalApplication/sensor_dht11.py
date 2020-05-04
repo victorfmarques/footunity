@@ -10,8 +10,10 @@ class dht11(object):
     def get_temperature(self):
 
         dht_sensor = Adafruit_DHT.DHT11
+        print(str(self.__pin))
         humidity, temperature = Adafruit_DHT.read(dht_sensor, self.__pin)
         if temperature is not None:
             return temperature
         else:
+            print("Temperature None")
             return None

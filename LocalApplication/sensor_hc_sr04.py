@@ -8,12 +8,9 @@ class hc_sr04(object):
     __echo_pin = 0
 
     def __init__(self, trigger_pin, echo_pin):
-        # Choosing BCM setmode
-        # GPIO.setmode(GPIO.BCM)
+
         self.__trigger_pin = trigger_pin
         self.__echo_pin = echo_pin
-
-        print(str(self.__trigger_pin))
 
         # Setting trigger and echo pins
         # GPIO.setup(self.__trigger_pin, GPIO.OUT)
@@ -26,12 +23,10 @@ class hc_sr04(object):
         sig_time = 0
         distance = 0
 
+	# Setting GPIO mode
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.__trigger_pin, GPIO.OUT)
         GPIO.setup(self.__echo_pin, GPIO.IN)
-
-        print("GPIO -> " + str(GPIO))
-        print("get_distance " + str(self.__trigger_pin))
 
         try:
             # Forcing trigger pin to low
@@ -53,9 +48,9 @@ class hc_sr04(object):
 
             # Calculating the pulse time
             sig_time = end - start
-            dht11 = lib_dht11.dht11(4)
-
-            distance = sig_time * (int(lib_helper.get_speed_of_sound()) / 2)
+            #  speed_of_sound = lib_helper.get_speed_of_sound()
+            # distance = sig_time * (speed_of_sound / 2)
+            distance = sig_time * 17150
 
         except Exception as e:
             # Handling exception
