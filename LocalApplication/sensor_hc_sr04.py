@@ -53,7 +53,7 @@ class hc_sr04(object):
                 sig_time = end - start
                 #  speed_of_sound = lib_helper.get_speed_of_sound()
                 # distance = sig_time * (speed_of_sound / 2)
-                distance = sig_time * 17150
+                distance += sig_time * 17150
 
         except Exception as e:
             # Handling exception
@@ -62,5 +62,6 @@ class hc_sr04(object):
         finally:
             # Clean GPIO pins
             GPIO.cleanup()
+	print(str(measure_number))
 
         return distance / measure_number

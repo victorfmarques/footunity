@@ -1,6 +1,6 @@
 import pika
 import json
-import LocalApplication.sensor_hc_sr04 as lib_hc_sr04
+import sensor_hc_sr04 as lib_hc_sr04
 
 
 def callback(ch, method, properties, body):
