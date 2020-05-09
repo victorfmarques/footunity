@@ -62,6 +62,6 @@ class hc_sr04(object):
         finally:
             # Clean GPIO pins
             GPIO.cleanup()
-	print(str(measure_number))
 
         return distance / measure_number
+
