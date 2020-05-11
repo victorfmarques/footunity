@@ -1,4 +1,4 @@
-KKKKKKKKKKKKimport pika
+import pika
 import json
 import sensor_hc_sr04 as lib_hc_sr04
 
