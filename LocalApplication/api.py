@@ -5,7 +5,6 @@ import sensor_hc_sr04 as lib_hc_sr04
 
 
 class ApiCommunicator(object):
-
     def __init__(self, user, password):
         self.credentials = pika.PlainCredentials(user, password)
         self.parameters = pika.ConnectionParameters('201.75.200.31', 5672, '/', self.credentials)
@@ -23,6 +22,10 @@ class ApiCommunicator(object):
         self.user_id = int(obj['UserId'])
         ch.basic_ack(delivery_tag=method.delivery_tag)
         self.measure_procedure()
+        self.basic_publish(_queue_name='MeasureResult', _data_set={'UserId': self.user_id,
+                                                                   'Centimetros': self.size
+                                                                   }
+                           )
 
     def basic_publish(self, _queue_name, _data_set):
         self.channel.queue_declare(queue=_queue_name)
@@ -40,9 +43,6 @@ class ApiCommunicator(object):
         # _queue_name = 'Measure'
         self.channel.basic_consume(
             _queue_name,
-            on_message_callback=self.callback,
-            callback=self.basic_publish(_queue_name='MeasureResult', _data_set={'UserId': self.user_id,
-                                                                                'Centimetros': self.size}
-                                        )
+            on_message_callback=self.callback
         )
         self.channel.start_consuming()
